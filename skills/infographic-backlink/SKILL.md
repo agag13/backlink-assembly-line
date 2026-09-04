@@ -1,6 +1,6 @@
 ---
 name: infographic-backlink
-description: "CHILD of backlink-assembly-line — create a complete infographic (design + PNG) for a client/product from verified facts, build the submission pack (title, description, sources, embed code), and submit to infographic/visual-content sites in the team's logged-in tabs. Use when the user says \"infographic backlink banao\", \"infographic pack\", or dispatches an infographic-submission batch. STATUS: sites being researched — first run needs Ankush's asset approval."
+description: "CHILD of backlink-assembly-line — take a READY infographic (made by Ankush's separate content skills), run intake checks, build per-site submission packs (title, unique descriptions, sources line, embed code), and submit to infographic/visual-content sites in the team's logged-in tabs. Creation is NOT this skill's job — submission only. Use when the user says \"infographic submit karo\", \"infographic backlink\", or dispatches an infographic-submission batch."
 ---
 
 # Infographic Backlink (child skill)
@@ -11,19 +11,20 @@ itself + the submission pack + type-specific site rules.
 
 ## Pipeline
 
-1. **Data collection** — facts ONLY from: Product Registry row, the client's
-   live website (fetch fresh), and any stats source Ankush/team provides in
-   the dispatch brief. Har number ke saath source. NEVER invent statistics —
-   agar 5 solid data points nahi milte, infographic mat banao; bolo kya
-   chahiye.
-2. **Design** — HTML/SVG artboard → PNG export:
-   - Portrait 800×2000px (±, site specs se adjust), brand colors from
-     registry (logo link wahin hai), readable at thumbnail size
-   - Structure: hook title → 4-7 data blocks → takeaway → footer with client
-     logo + URL + "Sources:" list
-   - Use the diagram/design toolchain (HTML/SVG + headless render to PNG);
-     har site ke liye SAME image, alag description (dup-content rule
-     descriptions pe lagta hai, image pe nahi)
+**DIVISION (Ankush's decision, Sep 4):** infographic CREATION is jimmedari is
+skill ki NAHI hai — wo Ankush ki alag content-creation skills se banta hai
+(ya team deti hai). Ye skill READY ASSET leti hai aur distribution/submission
+karti hai.
+
+1. **Asset intake** — input: final infographic PNG (ya uska file/link) +
+   client + target URL. Intake checks (fail → wapas bhejo, submit mat karo):
+   portrait ~800×2000–4000px, <1.5MB, footer mein client logo + URL +
+   cited sources, thumbnail pe readable. Derivative crops missing hon
+   (Pinterest 735×1102, OG 1200×630) to Claude crop kar sakta hai — ye
+   resize hai, creation nahi.
+2. **Canonical first** — confirm the infographic client ki apni site pe
+   embed-code box ke saath live hai; directories usi canonical page ko
+   target karti hain. Nahi hai → pehle wo (team/Ankush), phir dispatch.
 3. **Pack** (per site):
    - Title (≤70 chars, keyword natural) · Description 150–300 words UNIQUE
      per site · Tags · Source-attribution line · **Embed code** block
@@ -46,8 +47,8 @@ itself + the submission pack + type-specific site rules.
   apni ID se (community rule, parent se inherited).
 - Paid-placement sites default skip; Ankush explicitly bole to hi.
 
-## Blocked until (per client)
+## Blocked until (per dispatch)
 
-- Registry mein logo + brand colors link
-- 5+ verified data points (client site se ya Ankush-provided source)
-- Pehli baar: Ankush ka design approve
+- Ready infographic PNG (Ankush ki content skills se) jo intake checks pass kare
+- Canonical page client ki site pe live (embed-code box ke saath)
+- Pehli baar per client: Ankush ka go

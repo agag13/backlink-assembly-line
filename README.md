@@ -5,7 +5,9 @@ submit karte ho** — Claude kabhi account nahi banata, password nahi bharta,
 CAPTCHA solve nahi karta.
 
 **📘 Poori documentation (naye member ko yahi do): [`docs/HANDOVER.md`](docs/HANDOVER.md)**
-Process diagram: `docs/assembly-line-diagram.html` (browser mein kholo) ·
+Docs index + "kya kahan save hota hai": [`docs/DATA-MAP.md`](docs/DATA-MAP.md) ·
+Skill tree/roadmap: [`docs/ROADMAP-skill-tree.md`](docs/ROADMAP-skill-tree.md) ·
+Process diagram: `docs/assembly-line-diagram.html` ·
 Team 1-pager: `docs/backlink-team-workflow.md`
 
 ## Ye "script" kaise chalti hai
