@@ -11,11 +11,19 @@ client/product.
 
 ## Family (parent routes, children generate)
 
-| Category | Child skill | Status |
+| Category (Site DB col N type) | Child skill | Status |
 |---|---|---|
-| Local citations / business listings / classifieds / profiles | `backlink-pack-generator` | LIVE |
-| SaaS & product directories (launch platforms, review sites, startup dirs — LP list) | `saas-listing-pack` | SKELETON — needs website list + product registry |
-| QA (all categories) | `backlink-live-validator` | LIVE |
+| citation / classified | `backlink-pack-generator` | LIVE |
+| directory-listing / vendor-profile | `saas-listing-pack` | LIVE |
+| infographic-submission | `infographic-backlink` | SKELETON — asset pipeline defined, sites research-seeded |
+| doc-slide-submission | `ppt-pdf-backlink` | SKELETON — uses pptx/pdf skills |
+| web2.0 / profile / social-bookmark | planned (`web20-post-pack`, `profile-backlink-pack`, `social-bookmark-pack`) | see docs/ROADMAP-skill-tree.md |
+| video-submission | planned (`video-backlink`, Phase 2) | roadmap |
+| QA (all types) | `backlink-live-validator` | LIVE |
+
+Route by Site DB column N (`Backlink Type`). Asset-based children (infographic,
+ppt-pdf, video) add one step before packs: Claude CREATES the asset, and the
+FIRST asset per client needs Ankush's explicit approval before dispatch.
 
 The child owns: site shortlist rules, dedupe source, pack fields, content.
 The parent owns: batch lifecycle, execution in browser tabs, backend writes,
