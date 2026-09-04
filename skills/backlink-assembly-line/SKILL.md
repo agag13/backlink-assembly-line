@@ -85,6 +85,11 @@ run as a wizard — ask, don't assume:
 4. Shortlist from **Site DB**: filter out sites already used for that
    client/product (Dispatch history + category data tabs), sort 🟢 first,
    then proven-live ⚪, then 🟡 (flagged); never 🔴 in an auto batch.
+   **Also respect column M (G-Index)**: 🔴 NOT-INDEXED → exclude (Google
+   us site ke pages hi nahi utha raha — link ka zero benefit); 🟠 THIN →
+   bottom only; 🟢 ACTIVE ranks above 🟡 SLOW at equal rating. Re-run the
+   check monthly ("index check chalao" → Apify site:/qdr:m queries →
+   `Index Check` tab + column M refresh).
    **Show the proposed list with ratings and wait for "haan/go"** before
    writing Dispatch rows. The person can swap sites by name.
 5. On confirm → continue at Batch lifecycle step 1 with those choices.

@@ -112,6 +112,17 @@ galti repeat. Har submit ke baad update + `Last verified` stamp hota hai,
 aur `git pull` se ek member ka seekha process poori team ko milta hai.
 Rule: playbook mein PROCESS only — credentials/client content kabhi nahi.
 
+### Tab: `Index Check` + Site DB column M (G-Index)
+
+Har site ka Google indexing check (Apify `site:` queries, last: 04-09-2026):
+kya Google us site ke NAYE pages last 30 din mein utha raha hai? Verdicts:
+🟢 ACTIVE (fresh pages indexed — **yahan pehle link banao**) · 🟢 MAJOR
+(famous platform, check skip) · 🟡 SLOW (indexed hai par 30d mein kuch
+fresh nahi — chalega, slow) · 🟠 THIN (1–2 pages hi indexed — low priority)
+· 🔴 NOT-INDEXED (**link mat banao, benefit zero**) · ⚪ NO-URL (URL daalo,
+re-check hoga). Shortlist ab is column ko bhi respect karti hai. Monthly
+re-run: "index check chalao".
+
 ### Tab 3: `Product Registry` (clients/products ka ground truth)
 
 Har product/client ki ek row: naam, website, tagline, category, **Keywords
