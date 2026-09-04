@@ -73,7 +73,10 @@ ID: `1JI7Flzgx0LP4-q75luh3s5IEFq1-7-2iqcG8N7S4Aiw` (Ankush se share karwao)
 **Status values (state machine):**
 `QUEUED` → `AWAITING_LOGIN` (aapki baari) → `READY` (login ho gaya) →
 `SUBMITTED` ya `BLOCKED` (CAPTCHA/payment/OTP atka — aap finish karo) ya
-`PENDING_APPROVAL` (site approve karegi, wait) → `VALIDATED` (QA pass).
+`PENDING_APPROVAL` (site approve karegi, wait) ya `AWAITING_EMAIL_VERIFY`
+(confirmation mail ka wait) ya `OUTCOME_UNKNOWN` (submit hua ya nahi
+unclear — **kabhi dobara submit MAT karo**; pehle dashboard/public
+page/mail check) → `VALIDATED` (QA pass).
 
 ### Tab 2: `Site DB` (236+ sites — reusable database, SABSE valuable cheez)
 

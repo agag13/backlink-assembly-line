@@ -61,7 +61,10 @@ Batch# · Date · Client/Product · Category · Site · Submission URL · Status
 Assigned to · Login done at · Submitted at · Live URL · Verdict · Notes
 
 Status machine: `QUEUED → AWAITING_LOGIN → READY → SUBMITTED | BLOCKED |
-PENDING_APPROVAL → (validator) VALIDATED`. Live URLs are ALSO written to the
+PENDING_APPROVAL | AWAITING_EMAIL_VERIFY | OUTCOME_UNKNOWN → (validator)
+VALIDATED`. `OUTCOME_UNKNOWN` (submit clicked, result unclear) is NEVER
+blindly retried — check the site's account/dashboard, the public page, and
+the inbox first; a duplicate listing is worse than a delayed one. Live URLs are ALSO written to the
 category's normal data tab (Tracker / Daily work report) so
 `backlink-live-validator` finds them without any changes.
 
@@ -99,10 +102,17 @@ run as a wizard — ask, don't assume:
 3. **Wait for "batch ready"** — the team confirms login (in chat, or the user
    relays). Mark `READY`, stamp Login-done-at.
 4. **Fill + submit** — in the team's logged-in Chrome tabs (Claude-in-Chrome
-   extension), one tab at a time: paste pack fields, pick category, upload
-   image, submit, copy the PUBLIC live/listing URL. Stamp Submitted-at per
-   site. CAPTCHA/OTP/payment appears → skip, mark `BLOCKED` with reason.
-   Approval-queue sites → `PENDING_APPROVAL`.
+   extension), one tab at a time. **Verification-first preflight**: before
+   typing anything, open the form read-only and surface the earliest
+   CAPTCHA/OTP/payment wall — walls found up front go to the human queue in
+   one batch instead of interrupting mid-fill. **Idempotency check**: skip
+   any site whose (root domain × client) already has a SUBMITTED/LIVE/
+   PENDING row anywhere in Dispatch history. Then: paste pack fields, pick
+   category, upload image, submit, copy the PUBLIC live/listing URL. Stamp
+   Submitted-at per site. CAPTCHA/OTP/payment mid-flow → skip, mark
+   `BLOCKED` with reason. Approval-queue sites → `PENDING_APPROVAL`; email
+   confirmation pending → `AWAITING_EMAIL_VERIFY`; unclear result →
+   `OUTCOME_UNKNOWN` (see status rules — never blind-retry).
 5. **Sheet update** — Dispatch rows + the category's data tab (Live URL row).
    Append the `Metrics` row with timings.
 6. **QA handoff** — run `backlink-live-validator` on the batch's live URLs
