@@ -100,6 +100,15 @@ hai — isliye isko sahi rakhna sabki zimmedari hai.
 - ⚪ `UNTESTED` — abhi try nahi hui
 - "(est)" = estimate hai; pehli real batch ke baad Claude isko real result se badal deta hai
 
+### Site Playbooks (repo ka `playbooks/` folder)
+
+Ek baar jis site pe form bhara, Claude uska process `playbooks/<domain>.md`
+mein save karta hai (steps, field mapping, quirks, live URL kahan milta hai).
+Agli baar wahi playbook padh ke seedha bharta hai — na re-discovery, na
+galti repeat. Har submit ke baad update + `Last verified` stamp hota hai,
+aur `git pull` se ek member ka seekha process poori team ko milta hai.
+Rule: playbook mein PROCESS only — credentials/client content kabhi nahi.
+
 ### Tab 3: `Product Registry` (clients/products ka ground truth)
 
 Har product/client ki ek row: naam, website, tagline, category, **Keywords
