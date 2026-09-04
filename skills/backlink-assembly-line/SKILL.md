@@ -110,6 +110,22 @@ run as a wizard — ask, don't assume:
 7. **Next dispatch** — immediately prep batch #N+1 (step 1) and notify the
    team, so login work and Claude work pipeline in parallel.
 
+## Site playbooks (per-site process memory)
+
+Repo folder `playbooks/` (git-versioned, team-shared) — one file per root
+domain: `playbooks/<domain>.md`, format in `playbooks/_TEMPLATE.md`.
+
+- **Before filling a site**: read its playbook if it exists — follow the
+  recorded steps/field order/quirks instead of re-discovering the form.
+- **After every submit on a site** (success OR blocked): write/update its
+  playbook — steps actually taken, field mapping (pack field → form field),
+  category picker vocabulary, image requirements, where the live URL
+  appears, approval delay, and what blocked (CAPTCHA at which step). Stamp
+  `Last verified: <date> (<client>)`.
+- Playbook exists → note `📖` in Site DB Notes; a playbook that failed on
+  replay gets its broken step corrected, not deleted.
+- Playbooks contain PROCESS only — never credentials, never client content.
+
 ## Reporting
 
 After every batch, report in chat: submitted / blocked (with reasons) /
