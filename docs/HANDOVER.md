@@ -199,7 +199,7 @@ hata ke Sulekha daal do"). Confirm hote hi Dispatch tab mein rows + packs
 mil jayenge.
 
 ### Step 2 — Login (aapka kaam)
-Batch ke sites Chrome mein kholo. Signup/verify/OTP/CAPTCHA sab khud.
+Batch ke sites Chrome mein kholo. Signup/verify/OTP/CAPTCHA/login sab khud.
 Email + password **sirf sheet ke designated columns mein** likho (section 3
 ke forbidden zones dekho — wahi columns aapke hain).
 
