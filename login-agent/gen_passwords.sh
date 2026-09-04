@@ -9,7 +9,7 @@ while IFS= read -r line; do
   case "$line" in
     PASS_*=)
       var="${line%%=}"
-      pw="$(openssl rand -base64 18 | tr '+/' 'Xz' | cut -c1-20)"
+      pw="$(openssl rand -base64 15 | tr -d '+/=' | cut -c1-14)!7aZ"
       # portable in-place edit
       awk -v v="$var" -v p="$pw" 'BEGIN{FS=OFS="="} $1==v && $2=="" {$2=p} {print}' .env > .env.tmp && mv .env.tmp .env
       filled=$((filled+1))
