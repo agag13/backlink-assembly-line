@@ -20,6 +20,12 @@ client/product.
 | web2.0 / profile / social-bookmark | planned (`web20-post-pack`, `profile-backlink-pack`, `social-bookmark-pack`) | see docs/ROADMAP-skill-tree.md |
 | video-submission | planned (`video-backlink`, Phase 2) | roadmap |
 | QA (all types) | `backlink-live-validator` | LIVE |
+| Site selection intelligence | `competitor-link-gap` | LIVE — "gap analysis chalao <client>" |
+
+Gap-analysis output feeds the wizard: domains tagged `gap:<client>` in Site DB
+Notes + a citation client's missing Tier-1/2 directories (validator's
+citation-directories.md) rank at the TOP of shortlists (still subject to
+G-Index and Auto-Rating rules).
 
 Route by Site DB column N (`Backlink Type`). Asset-based children (infographic,
 ppt-pdf, video) add one step before packs: Claude CREATES the asset, and the
