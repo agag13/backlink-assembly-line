@@ -31,14 +31,19 @@ products + editable keywords), `Metrics` (kitne time mein kitne links).
 ## One-time setup (har team member, ~10 min)
 
 1. **Claude Code install** karo (desktop app ya CLI) aur login.
-2. **Ye repo clone karke skills install** karo:
+2. **Ye repo clone karke skills install** karo. Repo **private** hai — pehle
+   Ankush se `agag13` pe collaborator access lo, phir git authenticate karo
+   (bina auth clone `Authentication failed` deta hai):
    ```bash
+   gh auth login          # ek baar, browser se
    git clone https://github.com/agag13/backlink-assembly-line.git
    cd backlink-assembly-line && ./install.sh
    ```
 3. **Sheets access**: Ankush se Control sheet + client sheets apne Google
    account pe share karwao, aur Claude Code mein Google Sheets connection
-   (Composio/MCP) apne account se jodo.
+   (Composio/MCP) **usi account** se jodo — jis email pe sheet share nahi hai
+   uska connection `403 PERMISSION_DENIED` deta hai aur parent skill chalta
+   nahi. Sheet IDs ki poori list: `docs/HANDOVER.md` §4 step 3.
 4. **Claude Chrome extension** install karo (batch submit isi se hota hai).
 
 ## Roz ka flow (5 steps)

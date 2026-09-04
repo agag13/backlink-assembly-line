@@ -11,7 +11,7 @@ row shows proof.
 
 ## Config (defaults — user can override per run)
 
-Global: Composio googlesheets account `googlesheets_eyah-myron` (ankush@fameninja) — NOT the default rankkking account. Dates appear in mixed formats (17-08-2026 / 18-8-2026) — normalize dd-m[m]-yyyy. **Run log goes to the central results spreadsheet `1AU_sykyWYAD8chcqfMI6OHs5rNJgBgQmIJpTt8lpo84` ("Backlink QA Results")** — append one row per sheet per run (columns: Run Date · Sheet · Rows Checked · SUCCESS · Target Missing · Access Fail · RECHECK Pending · Success Rate % (decided) · Indexed (Google) · Fortis:LDC · Notes). If the user names a sheet, run only that one; otherwise ask which (or "dono").
+Global: Composio googlesheets account `googlesheets_panna-spider` (jrwordpress@rankkking.net) — this IS the default account, and it is currently the only connected Sheets account. Verified Sep 4, 2026: it can reach both source sheets and the results sheet, and their tab names match this config. The previously specified `googlesheets_eyah-myron` (ankush@fameninja) no longer exists in Composio. Write access is verified too — two run rows landed in the results sheet on Sep 4, 2026. Dates appear in mixed formats (17-08-2026 / 18-8-2026) — normalize dd-m[m]-yyyy. **Run log goes to the central results spreadsheet `1AU_sykyWYAD8chcqfMI6OHs5rNJgBgQmIJpTt8lpo84` ("Backlink QA Results")** — append one row per sheet per run (columns: Run Date · Sheet · Rows Checked · SUCCESS · Target Missing · Access Fail · RECHECK Pending · Success Rate % (decided) · Indexed (Google) · Fortis:LDC · Notes). If the user names a sheet, run only that one; otherwise ask which (or "dono").
 
 **Profile 1 — Content backlinks sheet** `1eCIq46EgNmx77uBXwx3HIOdtd6T39KDx31w0nBscrrg`:
 
@@ -50,7 +50,8 @@ Global: Composio googlesheets account `googlesheets_eyah-myron` (ankush@fameninj
    activity_type`) to a scratch file.
 3. **Run the checker** (deterministic gates, logged-out, raw HTML):
    ```bash
-   python3 "$SKILL_DIR/scripts/check_links.py" input.json > output.json
+   python "$SKILL_DIR/scripts/check_links.py" input.json > output.json
+   # `python` on this Windows machine (no python3 on PATH); use python3 on POSIX
    ```
    Each result carries: `access` (OK / 404_NOT_FOUND / LOGIN_WALL /
    LOGIN_WALL_SUSPECT / INVALID_URL), `link_verdict` (LINK_FOUND /
@@ -68,29 +69,47 @@ Global: Composio googlesheets account `googlesheets_eyah-myron` (ankush@fameninj
    `references/content-checklists.md`. Use `snippet`/`word_count`/`images`
    first; fetch the full page when the snippet is not enough. Below
    threshold → `CONTENT_INCOMPLETE` with the score in Reason.
-6. **Listing NAP (Gate 4)** — if Activity Type is a business listing, verify
-   the business address appears in the page content → else `ADDRESS_MISSING`.
+6. **Listing NAP (Gate 4)** — if Activity Type is a business listing / local
+   citation, verify Name-Address-Phone against the **registry ground truth**
+   (`Target listing URL` tab — canonical name, address, phone per client;
+   Ankush verifies these once against the GMB, the skill never guesses NAP):
+   - **Name**: business/doctor name present (minor spacing/case ok)
+   - **Phone**: compare digits-only (strip +91/spaces/dashes)
+   - **Address**: fuzzy — PIN code present AND at least 2 street/area tokens
+     match (e.g. "Imperial Plaza" + "Aligarh"); full exact match not required
+   - Any of the three missing → `ADDRESS_MISSING` with which field(s) in
+     Reason (e.g. "phone + PIN missing"). Registry row incomplete →
+     `CONFIG_MISSING`, ask to fill the registry first.
 7. **Index check** — for rows that passed Gates 1–2, run
    `SERPAPI_GOOGLE_LIGHT_SEARCH` via Composio (connected account
-   `serpapi_moony-chaja`) with `q: "site:<live URL>"`. Organic result whose
+   `serpapi_kohl-bon`) with `q: "site:<live URL>"`. Organic result whose
    link matches the live URL → Google indexed YES; `organic_results_state:
    "Fully empty"` → NO. Throttle ~1–2 req/s (batch in groups, back off on
    429). Bing column: leave pending unless a Bing engine is available
    (Apify actor is the fallback once its monthly limit resets). Never fail
    a row on index status. (Validated Sep 4, 2026: freead1 ad indexed;
    mixcloud/fliphtml5 profiles not indexed.)
-8. **Writeback** — update columns G–N for every checked row:
-   - G Verdict: `SUCCESS` or the failing verdict
-   - H Category: ACCESS / LINK / CONTENT / LISTING / OK
-   - I Reason: one exact line (e.g. "HTTP 404", "target URL content mein
+8. **Writeback** — write **only** into the columns the active profile's WRITE
+   row lists above. The two sheets have DIFFERENT layouts, so never hardcode
+   letters here: Profile 1 writes F Indexing · G Verdict · J Category ·
+   K Reason · L Rel · M Content Score · N Checked At; Profile 2 writes
+   H Indexing · I Verdict · J Category · K Reason · L Rel · M Content Score ·
+   N Checked At. **Before every write, re-check the profile's FORBIDDEN list
+   — on Profile 1, H and I are Email/Password.** Writing a verdict into a
+   credential column is the one unrecoverable mistake this skill can make.
+   Values:
+   - Verdict: `SUCCESS` or the failing verdict
+   - Category: ACCESS / LINK / CONTENT / LISTING / OK
+   - Reason: one exact line (e.g. "HTTP 404", "target URL content mein
      nahi mila", "score 4/7 = 57%", "address missing", "redirected → final
      URL ok"). `MENTION_ONLY` = verdict `TARGET_URL_MISSING`, Reason "URL
      text mein hai par link nahi bana"
-   - J Rel, K Content Score, L Google Indexed, M Bing Indexed,
-     N Checked At (ISO timestamp)
-9. **Run Tracker append** — one row: Run Date · Time · Links Checked ·
-   Duration · Success · Fail:Access · Fail:Link · Fail:Content ·
-   Fail:Listing · Success Rate % · Indexed (G) · Index Rate % · Notes.
+   - Rel, Content Score, Indexing (G:Y/N · B:Y/N), Checked At (ISO timestamp)
+9. **Run log append** — one row in the central results spreadsheet's `Sheet1`,
+   matching its real header (verified Sep 4, 2026): Run Date · Sheet ·
+   Rows Checked · SUCCESS · Target Missing · Access Fail (404/wall/invalid) ·
+   RECHECK Pending · Success Rate % (decided) · Indexed (Google) · Fortis:LDC ·
+   Notes. One row per source sheet per run.
 10. **Manager issues list** — for every actionable fail (TARGET_URL_MISSING /
     404_NOT_FOUND / INVALID_URL / confirmed LOGIN_WALL), append a row to the
     central results spreadsheet's **`Issues` tab**: Run Date · Sheet · Row ·
@@ -103,6 +122,25 @@ Global: Composio googlesheets account `googlesheets_eyah-myron` (ankush@fameninj
     Issues tab dekho aur theek karwao" with the top counts. If a Telegram bot
     token + chat_id or a Google Chat webhook is configured, POST the same
     summary there (plain HTTPS call); otherwise skip silently.
+
+## Domain metrics enrichment (DA/DR — free-first)
+
+After the gates, enrich the **unique domains** of all live URLs (dedupe first —
+~345 rows ≈ ~150 domains) and refresh at most monthly per domain:
+
+1. **Primary (FREE): OpenPageRank API** (domcop.com/openpagerank) — authority
+   score 0–10, **100 domains per request, 30,000/month free, 60 req/min**.
+   Needs a free API key → env var `OPR_API_KEY` (Ankush signs up once, no
+   card). Endpoint: `GET https://openpagerank.com/api/v1.0/getPageRank?domains[]=...`
+   with header `API-OPR: $OPR_API_KEY`.
+2. **Fallback / deep (paid, cheap): Apify** `maximedupre/ahrefs-free-website-stats-scraper`
+   — DR + organic traffic + linking sites at ~$0.0018/domain. Use only for
+   domains where OPR is unavailable or when DR/traffic specifically needed.
+3. **Store** in the central results spreadsheet, tab **`Domains`**: Domain ·
+   OPR Score · DR · Traffic · Last Checked. Before fetching, look the domain
+   up here — re-fetch only if Last Checked > 30 days.
+4. In the run summary, flag links built on **low-authority domains (OPR ≤ 2)**
+   — info only, never a row verdict.
 
 ## Verdict taxonomy
 
