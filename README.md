@@ -4,6 +4,7 @@ FameNinja off-page team ka batch backlink system. **Claude sochta hai, aap
 submit karte ho** — Claude kabhi account nahi banata, password nahi bharta,
 CAPTCHA solve nahi karta.
 
+**📘 Poori documentation (naye member ko yahi do): [`docs/HANDOVER.md`](docs/HANDOVER.md)**
 Process diagram: `docs/assembly-line-diagram.html` (browser mein kholo) ·
 Team 1-pager: `docs/backlink-team-workflow.md`
 
