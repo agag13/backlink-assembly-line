@@ -26,9 +26,11 @@ quality/ban-risk decision — do not offer to automate those steps.
 
 ## Config (defaults — user can override per run)
 
-Global: Composio googlesheets account `googlesheets_eyah-myron`
-(ankush@fameninja) — NOT the default rankkking account. Dates are
-dd-m[m]-yyyy mixed formats.
+Global: Composio googlesheets account `googlesheets_panna-spider`
+(jrwordpress@rankkking.net) — this IS the default account, and verified
+Sep 4, 2026 it is the only connected Sheets account. The account this skill
+previously named, `googlesheets_eyah-myron` (ankush@fameninja), no longer
+exists in Composio. Dates are dd-m[m]-yyyy mixed formats.
 
 **Registry (ground truth per client)** — sheet
 `1X0ig5ZqryO_LtY2bSdX92bhNq2Mu9bJ63AiIocs6F7c`, tab `Target listing URL`:
