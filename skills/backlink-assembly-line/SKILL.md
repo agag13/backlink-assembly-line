@@ -1,0 +1,118 @@
+---
+name: backlink-assembly-line
+description: PARENT orchestrator for batch backlink production — create a dispatch (10 sites × client/product), route pack generation to the right child skill by category, notify the team to log in, fill + submit packs in the team's logged-in Chrome tabs, write live URLs + timing to the sheet backend, hand the batch to backlink-live-validator, and announce the next dispatch. Use when the user says "dispatch banao", "batch chalao", "assembly line", "aaj ka batch", or asks to run the backlink production loop.
+---
+
+# Backlink Assembly Line (parent skill)
+
+Runs the batch loop: **dispatch → team login → Claude fill+submit → sheet
+update → QA → next dispatch**. One batch = 10 sites (configurable) for one
+client/product.
+
+## Family (parent routes, children generate)
+
+| Category | Child skill | Status |
+|---|---|---|
+| Local citations / business listings / classifieds / profiles | `backlink-pack-generator` | LIVE |
+| SaaS & product directories (launch platforms, review sites, startup dirs — LP list) | `saas-listing-pack` | SKELETON — needs website list + product registry |
+| QA (all categories) | `backlink-live-validator` | LIVE |
+
+The child owns: site shortlist rules, dedupe source, pack fields, content.
+The parent owns: batch lifecycle, execution in browser tabs, backend writes,
+notifications, metrics, QA handoff.
+
+## Red lines (inherited by every child — never relax)
+
+- Claude NEVER: creates accounts, enters passwords/credentials, solves or
+  bypasses CAPTCHA. Login/signup/OTP is always the team's step.
+- Forbidden sheet zones (never read/write/quote): Tracker `D–E`, worksheet
+  `H–I`, per-client tabs, `business listing sites` beyond column H.
+- A batch go-ahead from the user covers exactly that batch's enumerated
+  fill+submit actions (including category picks and a listing form's standard
+  terms checkbox). Anything beyond — payment, phone verify, unexpected
+  permissions, CAPTCHA at submit — pause that site, mark `BLOCKED`, report.
+- Facts in packs come from the registry + the client/product's own website.
+  Nothing invented, ever.
+
+## Backend (sheet = state store)
+
+**Control spreadsheet: `1JI7Flzgx0LP4-q75luh3s5IEFq1-7-2iqcG8N7S4Aiw`**
+("Backlink Assembly Line — Control", ankush@fameninja Drive). Four tabs:
+
+- **`Site DB`** — reusable site database, ALL clients/products (seeded with
+  the citations inventory + the 203-site LP list). Columns: Site · URL ·
+  Category · Bucket · DA · Spam % · **Auto Rating** · Login Type ·
+  Submission URL · Proven Live · Last Used · Notes. Rating values:
+  🟢 AUTO-FULL (login ke baad Claude 100% complete karta hai) ·
+  🟡 PARTIAL/OTP/VERIFY/APPROVAL (Claude bharta hai, human finish/wait) ·
+  🔴 PITCH-ONLY / HUMAN-POST / HUMAN-ONLY / LOW-DA · ⚪ UNTESTED.
+  **After every batch, update the attempted sites' Auto Rating from what
+  actually happened** — "(est)" hat jaata hai, real result likho + Last Used.
+  New clients shortlist FROM this DB first — that's its whole point.
+- **`Product Registry`** — one row per product (FameNinja seeded). The
+  **Keywords column is team-editable and changes often** — read it fresh at
+  every dispatch prep, never cache keywords from a previous batch.
+- **`Dispatch`** — batch queue (schema below).
+- **`Metrics`** — one row per batch (schema below).
+
+**`Dispatch`** columns:
+
+Batch# · Date · Client/Product · Category · Site · Submission URL · Status ·
+Assigned to · Login done at · Submitted at · Live URL · Verdict · Notes
+
+Status machine: `QUEUED → AWAITING_LOGIN → READY → SUBMITTED | BLOCKED |
+PENDING_APPROVAL → (validator) VALIDATED`. Live URLs are ALSO written to the
+category's normal data tab (Tracker / Daily work report) so
+`backlink-live-validator` finds them without any changes.
+
+**`Metrics`** tab, one row per batch: Batch# · Sites · Start · Login-done ·
+End · Total min · Links/hour · Submitted · Blocked · Validated-SUCCESS %.
+This answers "kitne time mein kitne backlinks".
+
+## Team wizard (bare invocation)
+
+When invoked with no arguments ("dispatch banao", `/backlink-assembly-line`),
+run as a wizard — ask, don't assume:
+
+1. **"Kis client/product ke liye?"** — options = rows of `Product Registry`
+   (+ citation clients from `Target listing URL`). Unknown name → offer to
+   add a registry row first.
+2. **"Kaunsi category?"** — citations / saas-listing (route child by answer).
+3. **"Kitne sites?"** — default 10.
+4. Shortlist from **Site DB**: filter out sites already used for that
+   client/product (Dispatch history + category data tabs), sort 🟢 first,
+   then proven-live ⚪, then 🟡 (flagged); never 🔴 in an auto batch.
+   **Show the proposed list with ratings and wait for "haan/go"** before
+   writing Dispatch rows. The person can swap sites by name.
+5. On confirm → continue at Batch lifecycle step 1 with those choices.
+
+## Batch lifecycle
+
+1. **Dispatch prep** — parse client/product + category + count (default 10).
+   Route to the child skill → ranked shortlist + packs. Ask the user (or read
+   the dispatch brief row) for anchor/keyword ONLY if the registry lacks it —
+   never guess. Write `Dispatch` rows as `AWAITING_LOGIN`.
+2. **Notify team** — send the numbered site list + submission URLs via
+   Telegram (Composio, needs configured chat_id; fallback: print in chat for
+   the user to forward). Message: "Batch #N — in sites pe login karke 'batch
+   #N ready' bolo."
+3. **Wait for "batch ready"** — the team confirms login (in chat, or the user
+   relays). Mark `READY`, stamp Login-done-at.
+4. **Fill + submit** — in the team's logged-in Chrome tabs (Claude-in-Chrome
+   extension), one tab at a time: paste pack fields, pick category, upload
+   image, submit, copy the PUBLIC live/listing URL. Stamp Submitted-at per
+   site. CAPTCHA/OTP/payment appears → skip, mark `BLOCKED` with reason.
+   Approval-queue sites → `PENDING_APPROVAL`.
+5. **Sheet update** — Dispatch rows + the category's data tab (Live URL row).
+   Append the `Metrics` row with timings.
+6. **QA handoff** — run `backlink-live-validator` on the batch's live URLs
+   (or queue it for the day's validator run). Verdicts land in the sheet.
+7. **Next dispatch** — immediately prep batch #N+1 (step 1) and notify the
+   team, so login work and Claude work pipeline in parallel.
+
+## Reporting
+
+After every batch, report in chat: submitted / blocked (with reasons) /
+pending-approval counts, total time, links/hour, and the next batch number.
+Weekly (on ask): totals per client, per category, validated-success rate from
+the validator's verdict columns.
